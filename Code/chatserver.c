@@ -8,7 +8,7 @@
 
 struct client {
 	int id;
-	char *name;
+	char name[10];
 };
 
 struct shared_board {
@@ -47,7 +47,9 @@ void main()
 		}
 
 		if (*client_count >0) {
-			printf("%d\n",*client_count);
+			/* Client management code here */
+
+			// printf("Name: %s\n", msg_board->clients[0].name);
 			delay(4);
 		}
 	}

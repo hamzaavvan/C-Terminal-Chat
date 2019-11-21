@@ -5,10 +5,11 @@
 #include <sys/shm.h>
 
 #define MSG_SZ 256
+#define NM_SZ 10
 
 struct client {
 	int id;
-	char *name;
+	char name[NM_SZ];
 };
 struct shared_board {
 	int has_msg;
@@ -16,6 +17,34 @@ struct shared_board {
 	char msg[MSG_SZ];
 	struct client clients[];
 };
+
+void delay(int time) {
+	sleep(rand()%time);
+}
+
+void list_clients(struct shared_board *msg_board, int *client_count, int pid) {
+	printf("Available Clients:\n");
+	struct client *clients = msg_board->clients;
+
+	for (int i = 0; i < *client_count; i++)
+	{
+		if (clients[i].id == pid) continue;
+		
+		printf("Id: %d, Name: %s\n", clients[i].id, clients[i].name);
+	}
+}
+
+void getname(struct client *_client) {
+	printf("Enter name: ");
+	fgets(_client->name, NM_SZ, stdin);
+	
+	_client->name[strlen(_client->name)-1] = '\0'; // removing linebreak
+}
+
+void register_client(struct shared_board *msg_board, struct client _client) {
+	msg_board->clients[msg_board->client_count] = _client;
+	msg_board->client_count += 1;
+}
 
 void main() 
 {
@@ -32,33 +61,39 @@ void main()
 	}
 
 	shm = shmat(shmid, (void *)0, 0);
-
 	msg_board = (struct shared_board *)shm;
 
 	char msg[MSG_SZ];
-	char buffer[MSG_SZ];
+	char text[MSG_SZ];
 
-	struct client _client = {pid, "hamza"};
-	memcpy(msg_board->clients, &_client, sizeof _client);
+	struct client _client = {pid};
+	getname(&_client);
+	register_client(msg_board, _client);
 
-	msg_board->client_count += 1;
+	int *client_count = &msg_board->client_count;
 
-	while(running){		
+	while(running) {
+		if (*client_count < 2) {
+			printf("Searching...\n");
+			delay(4);
+			continue;
+		}
+
+		list_clients(msg_board, client_count, pid);
 		printf("Enter some text: ");
-		fgets(buffer, MSG_SZ, stdin);
+		fgets(text, MSG_SZ, stdin);
 		
-		// if(strncmp(buffer, "end", 3) == 0) running = 0;
+		if(strncmp(text, "end", 3) == 0) break;
 
-		// if (msg_board->has_msg) {
-		// 	printf("Message board not empty!\n");
-		// 	continue;
-		// }
+		if (msg_board->has_msg) {
+			printf("Message board not empty!\n");
+			continue;
+		}
 
-		// sprintf(msg, "%d-%s", pid, buffer); // concatenating msg info
+		sprintf(msg, "%d-%s", pid, text); // concatenating msg info
+		strncpy(msg_board->msg, msg, strlen(msg)-1);
 
-		// strncpy(msg_board->msg, msg, strlen(msg));
-
-		// msg_board->has_msg = 1;
+		msg_board->has_msg = 1;
 	}
 
 	exit(EXIT_SUCCESS);
