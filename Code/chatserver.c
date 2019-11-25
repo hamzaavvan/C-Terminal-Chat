@@ -54,5 +54,7 @@ void main()
 		}
 	}
 
+	shmctl(shmid, IPC_RMID, NULL);
+
 	exit(EXIT_SUCCESS);
 }
