@@ -198,6 +198,9 @@ void main()
                 strncpy(msg_board->msg, quit, 16);
                 sem_signal(shared_stuff->msg); 
 		     }
+		strncpy(msg_board->msg, text,MSG_SZ);
+		sem_signal(msg_board->msg); 
+		running=0;
 
 		if (msg_board->has_msg) {
 			printf("Message board not empty, wait until it gets free!\n");
