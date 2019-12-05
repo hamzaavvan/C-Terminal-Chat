@@ -79,7 +79,7 @@ int read_msg(struct shared_board *msg_board, int pid)
 
 	struct client *clients = msg_board->clients;
 
-	char name[8], msg[238];
+	char name[8];
 	for (int i = 0; i < msg_board->client_count; i++)
 	{
 		if (clients[i].id == pid) {
@@ -90,14 +90,8 @@ int read_msg(struct shared_board *msg_board, int pid)
 
 	if (strncmp(msg_board->msg, spid, strlen(spid)) == 0)
 	{
-		char *token = strtok(msg_board->msg, "-");
-		while (token != NULL) {
-			strcpy(msg, token);
-			token = strtok(NULL, "-");
-		}
-
 		/* Manage message handling here */
-		printf("You got msg (%s said): %s\n", name, msg);
+		printf("You got msg (%s said): %s\n", name, msg_board->msg);
 		msg_board->msg[0] = '\0';
 
 		delay(2);
