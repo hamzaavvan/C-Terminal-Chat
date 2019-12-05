@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/shm.h>
+#include <semaphore.h>
 
 #define MSG_SZ 256
 #define NM_SZ 10
@@ -121,6 +122,8 @@ void main()
 	void *shm = (void *)0;
 	struct shared_board *msg_board;
 	int shmid, pid = getpid(), running = 1;
+    char *quit[16];
+	char *list[16];
 
 	srand((unsigned int)getpid());
 	shmid = shmget((key_t)1337, sizeof(struct shared_board), 0666);
@@ -176,6 +179,25 @@ void main()
 		fgets(text, MSG_SZ, stdin);
 		
 		if(strncmp(text, "end", 3) == 0) break;
+         if(strncmp(text,"@Quit",5)==0)
+             { 
+	            quit[0]='/0';
+	            sem_wait(msg_board->msg); 
+	            strcat(quit,"Quit----");
+                strcat(quit,client->name); 	
+                strncpy(msg_board->msg, quit, 16);
+                 sem_signal(msg_board->msg); 
+                exit(1);
+		     }
+        if(strncmp(text,"@List",5)==0)
+             {  
+	            list[0]='/0';
+                sem_wait(shared_stuff->msg);
+	            strcat(list,"List----");
+                strcat(list,client->name); 	
+                strncpy(msg_board->msg, quit, 16);
+                sem_signal(shared_stuff->msg); 
+		     }
 
 		if (msg_board->has_msg) {
 			printf("Message board not empty, wait until it gets free!\n");
