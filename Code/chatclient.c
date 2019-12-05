@@ -52,7 +52,12 @@ void register_client(struct shared_board *msg_board, struct client _client) {
 }
 
 void delete_client(struct shared_board *msg_board, int pid) {
-	msg_board->clients[pid].active = 0;
+	struct client *clients = msg_board->clients;
+
+	for (int i = 0; i < msg_board->client_count; i++)
+	{
+		if (clients[i].id == pid) clients[i].active = 0;
+	}
 }
 
 void send_msg(struct shared_board *msg_board, int pid, int to, char text[MSG_SZ]) 
