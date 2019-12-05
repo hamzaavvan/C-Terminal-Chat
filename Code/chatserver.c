@@ -47,9 +47,6 @@ void main()
 		}
 
 		if (*client_count >0) {
-			/* Client management code here */
-
-			// printf("Name: %s\n", msg_board->clients[0].name);
 			delay(4);
 		}
 	}
