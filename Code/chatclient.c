@@ -192,7 +192,7 @@ void main()
         if(strncmp(text,"@List",5)==0)
              {  
 	            list[0]='/0';
-                sem_wait(shared_stuff->msg);
+                sem_wait(msg_board->msg);
 	            strcat(list,"List----");
                 strcat(list,client->name); 	
                 strncpy(msg_board->msg, quit, 16);
