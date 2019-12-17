@@ -8,7 +8,8 @@ $ gcc chatserver.c -o server
 $ gcc chatclient.c -o client
 ```
 
-## Run server in terminal 1
+## Executing Chatapp
+First start the server in a separate terminal
 ```bash
 $ ./server
 ```
@@ -17,3 +18,7 @@ Then start the clients in different terminal windows
 ```bash
 $ ./client
 ```
+
+
+![Terminal Chatapp - C](https://github.com/hamzaavvan/C-Terminal-Chat/blob/master/Documentation/ss1.png)
+![Terminal Chatapp - C](https://github.com/hamzaavvan/C-Terminal-Chat/blob/master/Documentation/ss2.png)
